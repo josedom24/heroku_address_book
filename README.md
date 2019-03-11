@@ -1,3 +1,5 @@
-# heroku_address_book
+#Addressbook
+OOP address book using PHP/MySQL and PDO
 
-Despliegue de aplicación [Address-Book](https://github.com/suraj2334/Address-Book) escrita en php en Heroku.
+#Installation
+Create MySQL database and execute users.sql

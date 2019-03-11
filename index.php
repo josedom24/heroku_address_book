@@ -1,193 +1,106 @@
 <?php
-	session_start();
-	if(isset($_SESSION['UID'])){
-		header("Location:dashboard/");
+	require_once('user.php');
+
+	//Instantiate user object
+	$user = new user();
+	
+	// Add new user
+	if(isset($_POST['submit'])){
+		$user->uname = strtoupper($_POST['uname']);
+		$user->uage = $_POST['uage'];
+		$user->uaddress  = strtoupper($_POST['uaddress']);    
+		$user->uhobbies  = strtoupper($_POST['uhobbies']);    
+		$user->uwork  = strtoupper($_POST['uwork']);    
+		$user->umobile = $_POST['umobile'];    
+		
+		if($user->uname == "" || $user->uage == "" || $user->uaddress == "" || $user->uhobbies == "" || $user->uwork == "" || $user->umobile == ""){
+			echo "please insert all the fields <br>";
+		} else {		
+			$user->insert();
+			echo "<script>";
+			echo "alert('Record has been saved in the database.');";
+			echo "</script>";
+		}
+	}
+  
+	// Edit user
+	if(isset($_POST['update'])){
+		$user->uid = $_POST['uid'];
+		$user->uname = strtoupper($_POST['uname']);
+		$user->uage = $_POST['uage'];
+		$user->uaddress  = strtoupper($_POST['uaddress']);    
+		$user->uhobbies  = strtoupper($_POST['uhobbies']);    
+		$user->uwork  = strtoupper($_POST['uwork']);    
+		$user->umobile = $_POST['umobile'];    
+     
+		if($user->uname =="" || $user->uage=="" || $user->uaddress=="" || $user->uhobbies =="" || $user->uwork=="" || $user->umobile==""){
+			echo "Please insert all the fields <br>";
+		} else {
+			$user->update();
+			header("Location:index.php");
+			exit;
+		}
+	}
+  
+	// Delete user
+	if (isset($_GET['uid'])){      
+		$user->uid = $_GET['uid'];
+		echo "<script>";
+		echo "alert('Record has been erased in the database.');";
+		echo "</script>";
+		$user->delete();
+		header("Location:index.php");
+		//exit;
 	}
 ?>
-<html>
-	<head>
-		<title>Address Book</title>
-		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="css/custom.css">
-		<link href="https://fonts.googleapis.com/css?family=Baloo+Bhaina" rel="stylesheet">
-	</head>
-	<body>
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-3">
-				</div>
-				<div class="col-sm-6 text-center">
-					<h1 class="title">Address Book</h1>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h1 class="panel-title">Welcome To Address Book</h1>
-						</div>
-						<div class="panel-body">
-							<div class="conatiner">
-								<div class="row" style="font-family: 'Baloo Bhaina', cursive;">
-									<div class="col-sm-6">
-										<button id="login" class="btn btn-lg btn-info" data-toggle="modal" data-target="#loginPop">Login</button>
-									</div>
-									<div class="col-sm-6">
-										<button id="register" class="btn btn-lg btn-warning" data-toggle="modal" data-target="#registerPop">Register</button>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-3">
-				</div>
-			</div>
-		</div>
-		<!-- Login Modal -->
-		<div class="modal fade" id="loginPop" tabindex="-1" role="dialog">
-		  <div class="modal-dialog" role="document">
-		    <div class="modal-content">
-		      <div class="modal-header text-center">
-		        <h3>Login</h3>
-		        <p id="res"></p>
-		      </div>
-		      <div class="modal-body">
-		        <form class="form-vertical" role="form" id="loginForm">		        	
-		        	<div class="row">
-		        		<div class="col-sm-3"></div>
-		        		<div class="form-group col-sm-6">
-			        		<label>Username</label>
-			        		<input type="text" class="form-control" name="username" id="username" autocomplete="off" />
-			        	</div>
-			        	<div class="col-sm-3"></div>
-		        	</div>
-		        	<div class="row">
-		        		<div class="col-sm-3"></div>
-		        		<div class="form-group col-sm-6">
-			        		<label>Password</label>
-			        		<input type="password" class="form-control" name="password" id="password" autocomplete="off" />
-			        	</div>
-			        	<div class="col-sm-3"></div>
-		        	</div>		        	
-		        
-		        <div class="modal-footer">
-		        	<div class="col-sm-6">
-		        		<input type="submit" value="Login" name="submit" class="btn btn-success" id="loginBtn" />
-		        	</div>
-		        	<div class="col-sm-6">
-		        		<input type="reset" value="Reset" class="btn btn-danger" id="resetBtn" />
-		        	</div>
-	        		</form>
-			    </div>
-		      </div>
-		      
-		    </div>    
-		  </div>
-		</div>
 
-		<!-- Registration Modal -->
-		<div class="modal fade" id="registerPop" tabindex="-1" role="dialog">
-		  <div class="modal-dialog" role="document">
-		    <div class="modal-content">
-		      <div class="modal-header text-center">
-		        <h3>Create A New Account</h3>
-		        <p id="resRegister"></p>
-		      </div>
-		      <div class="modal-body">
-		        <form class="form-vertical" role="form" id="registerForm">
-		        	<div class="row">
-		        		<div class="col-sm-3"></div>
-		        		<div class="form-group col-sm-6">
-			        		<label>First Name</label>
-			        		<input type="text" class="form-control" name="fn" id="fn" autocomplete="off" />
-			        	</div>
-			        	<div class="col-sm-3"></div>
-		        	</div>
-		        	<div class="row">
-		        		<div class="col-sm-3"></div>
-		        		<div class="form-group col-sm-6">
-			        		<label>Last Name</label>
-			        		<input type="text" class="form-control" name="ln" id="ln" autocomplete="off" />
-			        	</div>
-			        	<div class="col-sm-3"></div>
-		        	</div>
-		        	<div class="row">
-		        		<div class="col-sm-3"></div>
-		        		<div class="form-group col-sm-6">
-			        		<label>Choose Username</label>
-			        		<input type="text" class="form-control" name="username" id="username" autocomplete="off" />
-			        	</div>
-			        	<div class="col-sm-3"></div>
-		        	</div>
-		        	<div class="row">
-		        		<div class="col-sm-3"></div>
-		        		<div class="form-group col-sm-6">
-			        		<label>Choose Password</label>
-			        		<input type="password" class="form-control" name="password" id="password" autocomplete="off" />
-			        	</div>
-			        	<div class="col-sm-3"></div>
-		        	</div>		        	
-		        
-		        <div class="modal-footer">
-		        	<div class="col-sm-6">
-		        		<input type="submit" value="Register" name="submit" class="btn btn-success" id="regBtn" />
-		        	</div>
-		        	<div class="col-sm-6">
-		        		<input type="reset" value="Reset" class="btn btn-danger" id="resetBtn" />
-		        	</div>
-	        		</form>
-			    </div>
-		      </div>
-		      
-		    </div>    
-		  </div>
-		</div>
-		<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
-		<script type="text/javascript" src="js/bootstrap.min.js"></script>
-		<script>
-			$(document).ready(function() {
-				//reset btn
-				$('.btn-danger').click(function(){
-					$('#res').text('');
-					$('#resRegister').text('');
-				});
-				//submit login form
-				$('#loginForm').submit(function(){
-					var formData = new FormData($(this)[0]);
-					$.ajax({
-				        url: 'login/',
-				        type: 'POST',
-				        data: formData,
-				        async: true,
-				        success: function (data){
-				            $('#res').html(data);
-				            if($('#res').text()=="Login Successful. Redirecting..."){
-				            	window.location.href = 'dashboard/';
-				            }
-				        },
-				        cache: false,
-				        contentType: false,
-				        processData: false
-				    });
-					$(this)[0].reset();
-					return false;
-				});  	
-				//submit registration form
-				$('#registerForm').submit(function(){
-					var formData = new FormData($(this)[0]);
-					$.ajax({
-				        url: 'register/',
-				        type: 'POST',
-				        data: formData,
-				        async: true,
-				        success: function (data) {
-				            $('#resRegister').html(data);
-				        },
-				        cache: false,
-				        contentType: false,
-				        processData: false
-				    });
-					$(this)[0].reset();
-					return false;
-				});  	
-			});
-		</script>
-	</body>
+<html>
+	<title>Users Address Book</title>
+	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<body bgcolor="lightgreen">
+	<br><br>
+	<hr style="height:5px;border:none;color:#333;background-color:#333;" />
+	<h1 align="center"> OOP Address Book </h1> 
+	<hr style="height:5px;border:none;color:#333;background-color:#333;" />
+	<br>
+	<center>
+		<input type='button' name='add' value='Create User' onclick=javascript:location.href='create.php' title="Click here to add records in the database." />
+	</center>
+	<br>
+	<table border='1' align="center">
+		<tr>
+			<th>USERS ID</th>
+			<th>NAME</th>
+			<th>AGE</th>
+			<th>ADDRESS</th>
+			<th>HOBBIES</th>
+			<th>WORK</th>
+			<th>MOBILE NUMBER</th>
+			<th>ACTIONS</th>
+		</tr>
+	
+	<?php 
+		$data = $user->display(); 
+		$i = 0; 
+		foreach( $data as $eachrecord ) {
+			$i++;
+	?>
+		<tr>
+			<td><?php echo $i; ?> </td>
+			<td><?php echo $eachrecord ['name']; ?></td>
+			<td><?php echo $eachrecord ['age']; ?></td>
+			<td><?php echo $eachrecord ['address']; ?></td>
+			<td><?php echo $eachrecord ['hobbies']; ?></td>
+			<td><?php echo $eachrecord ['work']; ?></td>
+			<td><?php echo $eachrecord ['mobile']; ?></td>
+			<td>
+				<a href="index.php?uid=<?php echo $eachrecord['id']; ?>" title="Click here to delete record in the database." >DELETE</a> 
+				<a href="update.php?uid=<?php echo $eachrecord['id']; ?>" title="Click here to update record in the database.">UPDATE</a> 
+			</td>
+		</tr>
+	<?php 
+		} 
+	?>
+	</table>
+</body>
 </html>
