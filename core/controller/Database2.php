@@ -21,7 +21,7 @@ class Database {
         }
 
 
-		
+		echo $var_username;
 		$this->user=$var_username;
 		$this->pass=$var_password;
 		$this->host=$var_server;
