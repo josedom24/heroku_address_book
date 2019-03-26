@@ -4,7 +4,7 @@ class Database {
 	public static $con;
 	function Database(){
 		// Entorno de producción
-        if (isset($_ENV["CLEARDB_DATABASE_URL"])
+        if (isset($_ENV["CLEARDB_DATABASE_URL"]))
         {
             $var_url      = parse_url(getenv("CLEARDB_DATABASE_URL"));
             $var_server   = $cleardb_url["host"];
