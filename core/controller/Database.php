@@ -19,7 +19,6 @@ class Database {
             $var_password = "userpassword";
             $var_db       = "newdb";
         }
-		echo($var_server);
 		$this->user=$var_username;
 		$this->pass=$var_password;
 		$this->host=$var_server;
