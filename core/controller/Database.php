@@ -5,10 +5,10 @@ class Database {
 	function Database(){
 		
 		
-		$this->user="";
-		$this->pass="";
-		$this->host="";
-		$this->ddbb="";
+		$this->user="b080ad531912e4";
+		$this->pass="c81a9e19";
+		$this->host="eu-cdbr-west-02.cleardb.net";
+		$this->ddbb="heroku_7ac88d14dbe05ea";
 	}
 
 	function connect(){
